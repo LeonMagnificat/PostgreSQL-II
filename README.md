@@ -1,1 +1,1 @@
-# PostgreSQL-II
+# Sequelize
