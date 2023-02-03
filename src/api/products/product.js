@@ -67,6 +67,16 @@ productRouter.delete("/:productId", async (req, res, next) => {
   }
 });
 
+productRouter.get("/:productId/reviews", async (req, res, next) => {
+  const product = await ProductModel.findByPk(req.params.productId, {
+    include: {
+      model: ReviewModel,
+    },
+  });
+  if (product) {
+    res.status(200).send(product);
+  }
+});
 productRouter.put("/:productId/categories", async (req, res, next) => {
   try {
     const productCategory = await productCategoryModel.create({
@@ -75,6 +85,20 @@ productRouter.put("/:productId/categories", async (req, res, next) => {
     });
 
     res.status(201).send(productCategory);
+  } catch (error) {
+    next(error);
+  }
+});
+
+productRouter.delete("/:productId/removeCategory/:categoryId", async (req, res, next) => {
+  try {
+    const numberOfDeletedRows = await productCategoryModel.destroy({
+      where: {
+        categoryId: req.params.categoryId,
+        ProductId: req.params.productId,
+      },
+    });
+    if (numberOfDeletedRows === 1) res.status(204).send();
   } catch (error) {
     next(error);
   }
